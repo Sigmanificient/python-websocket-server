@@ -125,7 +125,7 @@ class TestServerThreadedWithClient():
 
         # Client won't be aware until trying to write more data
         with pytest.raises(BrokenPipeError):
-            for i in range(3):
+            for _ in range(3):
                 client.send("test")
                 sleep(0.2)
 
@@ -138,7 +138,7 @@ class TestServerThreadedWithClient():
 
         # Client won't be aware until trying to write more data
         with pytest.raises(BrokenPipeError):
-            for i in range(3):
+            for _ in range(3):
                 client.send("test")
                 sleep(0.2)
 

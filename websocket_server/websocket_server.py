@@ -267,7 +267,10 @@ class WebSocketHandler(StreamRequestHandler):
             try:
                 socket = ssl.wrap_socket(socket, server_side=True, certfile=server.cert, keyfile=server.key)
             except: # Not sure which exception it throws if the key/cert isn't found
-                logger.warning("SSL not available (are the paths {} and {} correct for the key and cert?)".format(server.key, server.cert))
+                logger.warning(
+                    f"SSL not available (are the paths {server.key} and {server.cert} correct for the key and cert?)"
+                )
+
         StreamRequestHandler.__init__(self, socket, addr, server)
 
     def setup(self):
@@ -393,13 +396,11 @@ class WebSocketHandler(StreamRequestHandler):
             header.append(FIN | opcode)
             header.append(payload_length)
 
-        # Extended payload
         elif payload_length >= 126 and payload_length <= 65535:
             header.append(FIN | opcode)
             header.append(PAYLOAD_LEN_EXT16)
             header.extend(struct.pack(">H", payload_length))
 
-        # Huge extended payload
         elif payload_length < 18446744073709551616:
             header.append(FIN | opcode)
             header.append(PAYLOAD_LEN_EXT64)
@@ -407,8 +408,6 @@ class WebSocketHandler(StreamRequestHandler):
 
         else:
             raise Exception("Message is too big. Consider breaking it into chunks.")
-            return
-
         with self._send_lock:
             self.request.send(header + payload)
 
@@ -472,11 +471,10 @@ def encode_to_UTF8(data):
     try:
         return data.encode('UTF-8')
     except UnicodeEncodeError as e:
-        logger.error("Could not encode data to UTF-8 -- %s" % e)
+        logger.error(f"Could not encode data to UTF-8 -- {e}")
         return False
     except Exception as e:
         raise(e)
-        return False
 
 
 def try_decode_UTF8(data):

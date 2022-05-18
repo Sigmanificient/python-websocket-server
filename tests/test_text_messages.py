@@ -85,7 +85,7 @@ def test_text_message_stress_bursts(session):
 
     # Threads receing
     threads_receiving = []
-    for i in range(NUM_THREADS):
+    for _ in range(NUM_THREADS):
         th = Thread(
             target=lambda fn: messages_received.append(fn()),
             args=(conn.recv,)
